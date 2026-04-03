@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Resume Analyzer</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0f172a, #1e3a8a);
+    color: white;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 30px;
+}
+
+.toggle {
+    cursor: pointer;
+    padding: 8px 14px;
+    background: #2563eb;
+    border-radius: 8px;
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: 250px 1fr 250px;
+    gap: 20px;
+    padding: 20px;
+}
+
+.side {
+    background: rgba(255,255,255,0.06);
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card {
+    background: rgba(255,255,255,0.08);
+    padding: 25px;
+    border-radius: 15px;
+    width: 320px;
+    text-align: center;
+}
+
+.ats-box {
+    background: #020617;
+    padding: 25px;
+    border-radius: 15px;
+    margin-top: 20px;
+    text-align: center;
+    width: 320px;
+}
+
+.score {
+    font-size: 45px;
+    color: #22c55e;
+}
+
+.progress {
+    height: 10px;
+    background: #1e293b;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.progress-bar {
+    height: 100%;
+    background: #22c55e;
+    width: 0%;
+    transition: 1s;
+}
+
+.section {
+    margin-top: 20px;
+    width: 90%;
+    max-width: 800px;
+    background: rgba(255,255,255,0.08);
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.tag {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    margin: 5px;
+    font-size: 12px;
+}
+
+.green { background: #22c55e; }
+.red { background: #ef4444; }
+
+.resume-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.resume-card {
+    background: rgba(0,0,0,0.4);
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.resume-title {
+    font-weight: bold;
+    color: #38bdf8;
+    margin-bottom: 8px;
+}
+
+.resume-body {
+    font-size: 13px;
+    color: #e2e8f0;
+    white-space: pre-wrap;
+    line-height: 1.5;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+button {
+    background: #2563eb;
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.footer {
+    margin-top: 40px;
+    padding: 15px;
+    text-align: center;
+    background: rgba(0,0,0,0.3);
+    color: #94a3b8;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h2>Resume Analyzer</h2>
+</div>
+
+<div class="layout">
+
+<div class="side">
+    <h3>📊 Insights</h3>
+
+    {% if score %}
+    <p>Skills Found: {{ skills|length }}</p>
+    <p>Missing Skills: {{ missing_skills|length }}</p>
+
+    {% if score < 40 %}
+        <p style="color:red;">Status: Poor</p>
+    {% elif score < 70 %}
+        <p style="color:orange;">Status: Average</p>
+    {% else %}
+        <p style="color:lightgreen;">Status: Good</p>
+    {% endif %}
+    {% endif %}
+</div>
+
+<div class="main">
+
+<div class="card">
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="resume" required><br><br>
+        <button type="submit">Analyze Resume</button>
+    </form>
+</div>
+
+{% if score %}
+
+<div class="ats-box">
+    <h3>ATS Score</h3>
+    <div class="score" id="score">0</div>
+
+    <div class="progress">
+        <div class="progress-bar" id="bar"></div>
+    </div>
+
+    <p>{{ score }}/100</p>
+    <p style="color:#94a3b8; font-size:12px;">
+        Based on skills, structure & content quality
+    </p>
+</div>
+
+<div class="section">
+    <h3>Detected Skills</h3>
+    {% for s in skills %}
+        <span class="tag green">{{ s }}</span>
+    {% endfor %}
+</div>
+
+<div class="section">
+    <h3>Missing Skills</h3>
+    {% for s in missing_skills %}
+        <span class="tag red">{{ s }}</span>
+    {% endfor %}
+</div>
+
+<div class="section">
+    <h3>Suggestions</h3>
+    <ul>
+        {% for s in suggestions %}
+            <li>{{ s }}</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<div class="section">
+    <h3>📄 Resume Breakdown</h3>
+
+    <div class="resume-grid">
+        {% for title, content in formatted_resume.items() %}
+        {% if content.strip() %}
+        <div class="resume-card">
+            <div class="resume-title">{{ title }}</div>
+            <div class="resume-body">{{ content }}</div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+
+{% endif %}
+
+</div>
+
+<div class="side">
+    <h3>💡 Tips</h3>
+    <ul>
+        <li>Add more technical skills</li>
+        <li>Use action verbs</li>
+        <li>Match job keywords</li>
+        <li>Keep resume clean</li>
+    </ul>
+</div>
+
+</div>
+
+<div class="footer">
+    Developed by Sarang Dev © 2026
+</div>
+
+<script>
+window.onload = function() {
+    let score = {{ score|default(0) }};
+    let scoreEl = document.getElementById("score");
+    let bar = document.getElementById("bar");
+
+    let current = 0;
+
+    let interval = setInterval(() => {
+        if (current >= score) {
+            clearInterval(interval);
+        } else {
+            current++;
+            scoreEl.innerText = current;
+            bar.style.width = current + "%";
+        }
+    }, 15);
+};
+</script>
+
+</body>
+</html>
