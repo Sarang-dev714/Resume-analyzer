@@ -23,6 +23,14 @@ AI-based Resume Analyzer built using Python and Flask to evaluate resumes based 
 
 ---
 
+## Screenshots
+
+### Home Page
+![Home](screenshot1.png)
+
+### Analysis Result
+![Result](screenshot2.png)
+
 ##  How to Run
 
 ```bash
