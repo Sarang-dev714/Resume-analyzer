@@ -28,3 +28,6 @@ AI-based Resume Analyzer built using Python and Flask to evaluate resumes based 
 ```bash
 pip install flask PyPDF2
 python app.py
+
+Open in browser:
+http://127.0.0.1:5000/
